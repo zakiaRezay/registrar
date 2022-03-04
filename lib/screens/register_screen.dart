@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:registrar/constants/app_colors.dart';
 import 'package:registrar/widgets/tcustom_text.dart';
 import 'package:registrar/widgets/text_field.dart';
 
@@ -51,6 +52,7 @@ class _RegistrarFormState extends State<RegistrarForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.primaryColorLight,
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

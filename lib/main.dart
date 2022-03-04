@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:registrar/screens/register_screen.dart';
 
 
-Future<void> main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
