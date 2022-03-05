@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:registrar/constants/app_colors.dart';
@@ -5,6 +6,7 @@ import 'package:registrar/screens/submission/confirmation.dart';
 import 'package:registrar/widgets/tcustom_text.dart';
 import 'package:registrar/widgets/text_field.dart';
 
+import 'google_signin/signin_screen.dart';
 
 class RegistrarForm extends StatefulWidget {
   const RegistrarForm({Key? key}) : super(key: key);
@@ -14,9 +16,9 @@ class RegistrarForm extends StatefulWidget {
 }
 
 class _RegistrarFormState extends State<RegistrarForm> {
-
   String? value;
   var dropDownValue = "1";
+  late User _user;
   var _selectedDate, _selectedMonth, _selectedYear;
   final dateKey = GlobalKey<FormState>();
   final cnicKey = GlobalKey<FormState>();
@@ -25,46 +27,99 @@ class _RegistrarFormState extends State<RegistrarForm> {
   final addressKey = GlobalKey<FormState>();
   final emailKey = GlobalKey<FormState>();
   final vaccineKey = GlobalKey<FormState>();
-  final TextEditingController cnicPassportEditingController = TextEditingController();
+  final TextEditingController cnicPassportEditingController =
+      TextEditingController();
   final TextEditingController nameEditingController = TextEditingController();
   final TextEditingController phoneEditingController = TextEditingController();
   final TextEditingController dateEditingController = TextEditingController();
-  final TextEditingController addressEditingController = TextEditingController();
-  final TextEditingController vaccineEditingController = TextEditingController();
+  final TextEditingController addressEditingController =
+      TextEditingController();
+  final TextEditingController vaccineEditingController =
+      TextEditingController();
   final TextEditingController emailEditingController = TextEditingController();
   late String _selectedGender = 'male';
 
+  bool _isSigningOut = false;
 
+  Route _routeToSignInScreen() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => SignInScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(-1.0, 0.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    double width =  size.width;
+    double width = size.width;
     double height = size.height;
     return Scaffold(
-      appBar: AppBar(title: customText("Add Patient Details",18,FontWeight.bold,Colors.white),centerTitle: true,),
-        body: Stack(
-          children: [
-            Positioned.fill(child: Container(
-                decoration: BoxDecoration(color: Colors.white.withOpacity(0.5),
-                    image: DecorationImage(
-              colorFilter:  ColorFilter.mode(Colors.white.withOpacity(0.2), BlendMode.dstATop),
-              image: const AssetImage("assets/images/covid.png")
-            )))),
-            Padding(
+      appBar: AppBar(
+        title: customText(
+            "Add Patient Details", 18, FontWeight.bold, Colors.white),
+        centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () async {
+                setState(() {
+                  _isSigningOut = true;
+                });
+                // await Authentication.signOut(context: context);
+                setState(() {
+                  _isSigningOut = false;
+                });
+                Navigator.of(context).pushReplacement(_routeToSignInScreen());
+              },
+              icon: Icon(Icons.login))
+        ],
+      ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.5),
+                      image: DecorationImage(
+                          colorFilter: ColorFilter.mode(
+                              Colors.white.withOpacity(0.2), BlendMode.dstATop),
+                          image:
+                              const AssetImage("assets/images/covid.png"))))),
+          Padding(
             padding: const EdgeInsets.all(8.0),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children:[
-                  const SizedBox(height: 10,),
+                children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Form(
                       key: cnicKey,
-                      child: defaultTextFieldNumber(cnicPassportEditingController, 'Enter CNIC',const Icon(Icons.credit_card))),
-                  const SizedBox(height: 15,),
+                      child: defaultTextFieldNumber(
+                          cnicPassportEditingController,
+                          'Enter CNIC',
+                          const Icon(Icons.credit_card))),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   Form(
                       key: nameKey,
-                      child: defaultTextField(nameEditingController, 'Enter Patient Name',const Icon(Icons.person))),
-                  const SizedBox(height: 15,),
+                      child: defaultTextField(nameEditingController,
+                          'Enter Patient Name', const Icon(Icons.person))),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   IntlPhoneField(
                     decoration: const InputDecoration(
                       labelText: 'Phone Number',
@@ -78,69 +133,83 @@ class _RegistrarFormState extends State<RegistrarForm> {
                       // print(phone.completeNumber);
                     },
                   ),
-
-                  const SizedBox(height: 10,),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Form(
                       key: emailKey,
-                      child: defaultTextFieldEmail(emailEditingController, 'Enter Email',const Icon(Icons.email))),
-                  const SizedBox(height: 15,),
+                      child: defaultTextFieldEmail(emailEditingController,
+                          'Enter Email', const Icon(Icons.email))),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   Form(
-                  key: dateKey,
-                  child: InkWell(
-                      onTap: () {
-                        _showDatePicker();
-                      },
-                      child:
-                          customTextDate(dateEditingController, 'Date of Birth',const Icon(Icons.calendar_today_sharp))),
-                ),
-                  const SizedBox(height: 15,),
+                    key: dateKey,
+                    child: InkWell(
+                        onTap: () {
+                          _showDatePicker();
+                        },
+                        child: customTextDate(
+                            dateEditingController,
+                            'Date of Birth',
+                            const Icon(Icons.calendar_today_sharp))),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   Form(
                       key: addressKey,
-                      child: defaultTextField(addressEditingController, 'Add Address',const Icon(Icons.dehaze_outlined))),
-                  const SizedBox(height: 15,),
+                      child: defaultTextField(addressEditingController,
+                          'Add Address', const Icon(Icons.dehaze_outlined))),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   Form(
                       key: vaccineKey,
-                      child: defaultTextField(vaccineEditingController, 'Vaccine Type',const ImageIcon(AssetImage("assets/images/covid.png")))),
-              SizedBox(
-                height: 80,
-                child:  Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-
+                      child: defaultTextField(
+                          vaccineEditingController,
+                          'Vaccine Type',
+                          const ImageIcon(
+                              AssetImage("assets/images/covid.png")))),
+                  SizedBox(
+                    height: 80,
                     child: Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: dropDownValue,
-                          isExpanded: true,
-                          items: <String>['1', '2',].map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Text(value)),
-                            );
-                          }).toList(),
-                          iconSize: 30,
-                          onChanged: (String? val) {
-                            setState(() {
-                              dropDownValue = val!;
-                            });
-                          },
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: dropDownValue,
+                              isExpanded: true,
+                              items: <String>[
+                                '1',
+                                '2',
+                              ].map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Padding(
+                                      padding: const EdgeInsets.all(5),
+                                      child: Text(value)),
+                                );
+                              }).toList(),
+                              iconSize: 30,
+                              onChanged: (String? val) {
+                                setState(() {
+                                  dropDownValue = val!;
+                                });
+                              },
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-
-              ),
-
-              ListTile(
-                contentPadding: EdgeInsets.zero,
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
                     leading: Radio<String>(
                       value: 'male',
                       activeColor: AppColors.primaryColor,
@@ -168,11 +237,11 @@ class _RegistrarFormState extends State<RegistrarForm> {
                     title: const Text('Female'),
                   ),
                   const SizedBox(height: 10),
-
                   SizedBox(
                     width: width,
                     child: ElevatedButton(
-                        child: customText('Save', 15, FontWeight.normal, Colors.white),
+                        child: customText(
+                            'Save', 15, FontWeight.normal, Colors.white),
                         onPressed: () {
                           // if(cnicKey.currentState!.validate()){
                           //   if(nameKey.currentState!.validate()){
@@ -180,7 +249,10 @@ class _RegistrarFormState extends State<RegistrarForm> {
                           //       if(dateKey.currentState!.validate()){
                           //         if(addressKey.currentState!.validate()){
                           //           if(vaccineKey.currentState!.validate()){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const Confirmation()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Confirmation()));
                           //           }
                           //         }
                           //       }
@@ -193,13 +265,15 @@ class _RegistrarFormState extends State<RegistrarForm> {
                 ],
               ),
             ),
-          )],
-        ),
+          )
+        ],
+      ),
     );
   }
+
   Future<void> _showDatePicker() async {
-    final DateTime? result =
-    await showDatePicker(context: context,
+    final DateTime? result = await showDatePicker(
+        context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime(2010),
         lastDate: DateTime(2050));
@@ -209,8 +283,7 @@ class _RegistrarFormState extends State<RegistrarForm> {
         _selectedMonth = result.month;
         _selectedYear = result.year;
         dateEditingController.text =
-        "${_selectedYear!.toString()}-${_selectedMonth!
-            .toString()}-${_selectedDate!.toString()} ";
+            "${_selectedYear!.toString()}-${_selectedMonth!.toString()}-${_selectedDate!.toString()} ";
       });
     }
   }

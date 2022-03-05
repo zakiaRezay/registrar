@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "263080615771",
+    "project_id": "fypregisterar",
+    "storage_bucket": "fypregisterar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263080615771:android:b3f9d69f8ae32a5e1d847e",
+        "android_client_info": {
+          "package_name": "com.example.registrar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "263080615771-akb3mi7eig01j2hjnctj4l4t3e0rpj9n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.registrar",
+            "certificate_hash": "dc375cd431d45b227b59ed70ccc0e2b26ddc30f8"
+          }
+        },
+        {
+          "client_id": "263080615771-7ua0ngv00m5ra6tceiks45e9880pl15a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyyA57irEsJ2pmQUa_lrAWYBgacHRIAF4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "263080615771-7ua0ngv00m5ra6tceiks45e9880pl15a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
