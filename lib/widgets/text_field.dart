@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 
-Widget defaultTextFieldNumber(TextEditingController callback, String title) {
+Widget defaultTextFieldNumber(TextEditingController callback, String title,Widget widget) {
   return TextFormField(
     // inputFormatters: [
     //   FilteringTextInputFormatter.allow(RegExp(r"^(\d)"))
@@ -13,6 +13,7 @@ Widget defaultTextFieldNumber(TextEditingController callback, String title) {
       border: const OutlineInputBorder(),
       filled: true,
       labelText: title,
+      prefixIcon: widget,
       counterText: '',
       fillColor: Colors.transparent,
     ),
@@ -31,7 +32,7 @@ Widget defaultTextFieldNumber(TextEditingController callback, String title) {
     },
   );
 }
-Widget defaultTextField(TextEditingController callback, String title) {
+Widget defaultTextField(TextEditingController callback, String title,Widget widget) {
   return TextFormField(
     // inputFormatters: [
     //   FilteringTextInputFormatter.allow(RegExp(r"^[0-9]{5}-[0-9]{7}-[0-9]{1}|\$"))
@@ -40,7 +41,7 @@ Widget defaultTextField(TextEditingController callback, String title) {
     decoration: InputDecoration(
       border: const OutlineInputBorder(),
       filled: true,
-      // icon: icon,
+      prefixIcon: widget,
       labelText: title,
       counterText: '',
       fillColor: Colors.transparent,
@@ -60,7 +61,7 @@ Widget defaultTextField(TextEditingController callback, String title) {
     },
   );
 }
-Widget customTextDate(TextEditingController callback, String title) {
+Widget customTextDate(TextEditingController callback, String title,Widget widget) {
   return TextFormField(
     inputFormatters: [
       FilteringTextInputFormatter.allow(RegExp(r"[0-9]+|\S"))
@@ -69,6 +70,7 @@ Widget customTextDate(TextEditingController callback, String title) {
     enableInteractiveSelection: false,
     enabled: false,
     decoration: InputDecoration(
+      prefixIcon: widget,
       border: const OutlineInputBorder(),
       filled: true,
       labelText: title,
@@ -78,6 +80,35 @@ Widget customTextDate(TextEditingController callback, String title) {
     onTap: null,
     maxLines: 1,
     keyboardType: null,
+    validator: (value) {
+      if (value == null) {
+        return "Field can not be left empty";
+      } else if (value.isEmpty) {
+        return "Field can not be left empty";
+      } else if (value.indexOf(' ')==0){
+        return 'Can not contain whitespaces';
+      }else {
+        return null;
+      }
+    },
+  );
+}
+Widget defaultTextFieldEmail(TextEditingController callback, String title,Widget widget) {
+  return TextFormField(
+    // inputFormatters: [
+    //   FilteringTextInputFormatter.allow(RegExp(r"^(\d)"))
+    // ],
+    controller: callback,
+    decoration: InputDecoration(
+      prefixIcon: widget,
+      border: const OutlineInputBorder(),
+      filled: true,
+      labelText: title,
+      counterText: '',
+      fillColor: Colors.transparent,
+    ),
+    // maxLength: length,
+    keyboardType: TextInputType.emailAddress,
     validator: (value) {
       if (value == null) {
         return "Field can not be left empty";

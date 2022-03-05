@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:registrar/constants/app_colors.dart';
 import 'package:registrar/screens/register_screen.dart';
 
 
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch().copyWith(
-            primary: Colors.green,
+            primary: AppColors.primaryColor,
           ),),
         home:    const RegistrarForm()//LoginScreen(),
     );
