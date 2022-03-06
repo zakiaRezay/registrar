@@ -122,3 +122,33 @@ Widget defaultTextFieldEmail(TextEditingController callback, String title,Widget
     },
   );
 }
+Widget defaultTextFieldPassword(TextEditingController callback, String title,Widget widget) {
+  return TextFormField(
+    // inputFormatters: [
+    //   FilteringTextInputFormatter.allow(RegExp(r"^(\d)"))
+    // ],
+    controller: callback,
+    decoration: InputDecoration(
+      prefixIcon: widget,
+      border: const OutlineInputBorder(),
+      filled: true,
+      labelText: title,
+      counterText: '',
+      fillColor: Colors.transparent,
+    ),
+    // maxLength: length,
+    obscureText: true,
+    keyboardType: TextInputType.emailAddress,
+    validator: (value) {
+      if (value == null) {
+        return "Field can not be left empty";
+      } else if (value.isEmpty) {
+        return "Field can not be left empty";
+      } else if (value.indexOf(' ')==0){
+        return 'Can not contain whitespaces';
+      }else {
+        return null;
+      }
+    },
+  );
+}

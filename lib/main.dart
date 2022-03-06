@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:registrar/constants/app_colors.dart';
-import 'package:registrar/screens/google_signin/signin_screen.dart';
+import 'package:registrar/screens/home_screen.dart';
 import 'package:registrar/screens/register_screen.dart';
+
+import 'screens/login_sceen.dart';
 
 
 Future<void> main() async{
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch().copyWith(
             primary: AppColors.primaryColor,
           ),),
-        home:     SignInScreen()//LoginScreen(),
+        home: const EmailLogin()//LoginScreen(),
     );
   }
 }

@@ -1,12 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:registrar/constants/app_colors.dart';
 import 'package:registrar/screens/submission/confirmation.dart';
+import 'package:registrar/widgets/snackbar_widget.dart';
 import 'package:registrar/widgets/tcustom_text.dart';
 import 'package:registrar/widgets/text_field.dart';
-
-import 'google_signin/signin_screen.dart';
 
 class RegistrarForm extends StatefulWidget {
   const RegistrarForm({Key? key}) : super(key: key);
@@ -27,38 +27,16 @@ class _RegistrarFormState extends State<RegistrarForm> {
   final addressKey = GlobalKey<FormState>();
   final emailKey = GlobalKey<FormState>();
   final vaccineKey = GlobalKey<FormState>();
-  final TextEditingController cnicPassportEditingController =
-      TextEditingController();
+  final TextEditingController cnicPassportEditingController = TextEditingController();
   final TextEditingController nameEditingController = TextEditingController();
   final TextEditingController phoneEditingController = TextEditingController();
   final TextEditingController dateEditingController = TextEditingController();
-  final TextEditingController addressEditingController =
-      TextEditingController();
-  final TextEditingController vaccineEditingController =
-      TextEditingController();
+  final TextEditingController addressEditingController = TextEditingController();
+  final TextEditingController vaccineEditingController = TextEditingController();
   final TextEditingController emailEditingController = TextEditingController();
   late String _selectedGender = 'male';
+  String number = '';
 
-  bool _isSigningOut = false;
-
-  Route _routeToSignInScreen() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => SignInScreen(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(-1.0, 0.0);
-        var end = Offset.zero;
-        var curve = Curves.ease;
-
-        var tween =
-        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
-        );
-      },
-    );
-  }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -69,20 +47,6 @@ class _RegistrarFormState extends State<RegistrarForm> {
         title: customText(
             "Add Patient Details", 18, FontWeight.bold, Colors.white),
         centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: () async {
-                setState(() {
-                  _isSigningOut = true;
-                });
-                // await Authentication.signOut(context: context);
-                setState(() {
-                  _isSigningOut = false;
-                });
-                Navigator.of(context).pushReplacement(_routeToSignInScreen());
-              },
-              icon: Icon(Icons.login))
-        ],
       ),
       body: Stack(
         children: [
@@ -130,6 +94,7 @@ class _RegistrarFormState extends State<RegistrarForm> {
                     ),
                     initialCountryCode: 'PK',
                     onChanged: (phone) {
+                      number = phone.completeNumber;
                       // print(phone.completeNumber);
                     },
                   ),
@@ -240,25 +205,30 @@ class _RegistrarFormState extends State<RegistrarForm> {
                   SizedBox(
                     width: width,
                     child: ElevatedButton(
-                        child: customText(
-                            'Save', 15, FontWeight.normal, Colors.white),
+                        child: customText('Save', 15, FontWeight.normal, Colors.white),
                         onPressed: () {
-                          // if(cnicKey.currentState!.validate()){
-                          //   if(nameKey.currentState!.validate()){
-                          //     if(phoneKey.currentState!.validate()){
-                          //       if(dateKey.currentState!.validate()){
-                          //         if(addressKey.currentState!.validate()){
-                          //           if(vaccineKey.currentState!.validate()){
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Confirmation()));
-                          //           }
-                          //         }
-                          //       }
-                          //     }
-                          //   }
-                          // }
+                          if(cnicKey.currentState!.validate()){
+                            if(nameKey.currentState!.validate()){
+                                if(dateKey.currentState!.validate()){
+                                  if(addressKey.currentState!.validate()){
+                                    if(vaccineKey.currentState!.validate()){
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(builder: (context) =>  Confirmation(
+                                              cnic: cnicPassportEditingController.text,
+                                              name: nameEditingController.text,
+                                              number: number,
+                                              dob : dateEditingController.text,
+                                              address :addressEditingController.text,
+                                              vt:vaccineEditingController.text,
+                                              gender: _selectedGender,
+                                              dose: dropDownValue,
+                                            )));
+                                    }
+                                  }
+                                }
+                            }
+                          }
                         }),
                   ),
                   const SizedBox(height: 10),
@@ -275,7 +245,7 @@ class _RegistrarFormState extends State<RegistrarForm> {
     final DateTime? result = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime(2010),
+        firstDate: DateTime(1950),
         lastDate: DateTime(2050));
     if (result != null) {
       setState(() {
